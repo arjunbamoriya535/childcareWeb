@@ -2,9 +2,9 @@ package com.childcare.dao;
 import java.sql.*;
 import java.util.*;
 
-//import com.childcare.bean.Baby;
-
 import com.childcare.bean.Baby;
+
+
 public class BabyDao {
 
 	public static Connection getCon(){
@@ -99,6 +99,24 @@ public class BabyDao {
 		}catch(Exception e){System.out.println(e);}
 		return list;
 	}
+	public static List<Baby> getRecordsByIndianName(String indian){
+		List<Baby> list=new ArrayList<Baby>();
+		try{
+			Connection con=getCon();
+			PreparedStatement ps=con.prepareStatement("select * from `indian-male-names`");
+			ps.setString(1,indian);
+			ResultSet rs=ps.executeQuery();
+			while(rs.next()){
+				Baby b=new Baby();
+				b.setName(rs.getString(1));
+				b.setSex(rs.getString(2));
+				b.setRace(rs.getString(3));
+				list.add(b);
+			}
+			con.close();
+		}catch(Exception e){System.out.println(e);}
+		return list;
+	}
 	  public static boolean validate(String name, String pass) {        
 	        boolean status = false;
 	        //Connection con = null;
@@ -138,4 +156,58 @@ public class BabyDao {
 	        }
 	        return status;
 	    }
+
+	public static List<Baby> getRecordsByIndianName() {
+		List<Baby> list=new ArrayList<Baby>();
+		try{
+			Connection con=getCon();
+			PreparedStatement ps=con.prepareStatement("select * from `indian-male-names`");
+		//	ps.setString(1,indian);
+			ResultSet rs=ps.executeQuery();
+			while(rs.next()){
+				Baby b=new Baby();
+				b.setName(rs.getString(1));
+				b.setSex(rs.getString(2));
+				b.setRace(rs.getString(3));
+				list.add(b);
+			}
+			con.close();
+		}catch(Exception e){System.out.println(e);}
+		return list;
+	}
+	public static List<Baby> getAllDoctorsRecords(){
+		List<Baby> list=new ArrayList<Baby>();
+		try{
+			Connection con=getCon();
+			PreparedStatement ps=con.prepareStatement("select * from doctors");
+			ResultSet rs=ps.executeQuery();
+			while(rs.next()){
+				Baby b=new Baby();
+				b.setId(rs.getInt(1));
+				b.setName(rs.getString(2));
+				b.setCity(rs.getString(3));
+				b.setPhone(rs.getString(4));
+				b.setImageData(rs.getBlob(5));
+				list.add(b);
+			}
+			con.close();
+		}catch(Exception e){System.out.println(e);}
+		return list;
+	}
+
+	public static int saveDoctorsData(Baby b) {
+		int status=0;
+		try{
+			Connection con=getCon();
+			PreparedStatement ps=con.prepareStatement("insert into doctors(name,city,phone) values(?,?,?)");
+			ps.setString(1,b.getName());
+			ps.setString(2,b.getCity());
+			ps.setString(3,b.getPhone());
+			
+			status=ps.executeUpdate();
+			con.close();
+		}catch(Exception e)
+		{System.out.println(e);}
+		return status;
+	}
 }
